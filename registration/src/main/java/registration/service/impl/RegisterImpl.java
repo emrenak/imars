@@ -22,10 +22,26 @@ import com.mongodb.client.MongoCollection;
 public class RegisterImpl implements Register {
 
 	public void addRegistration(String email, String password) throws UserAlreadyExistsException {
-		MongoCollection<Document> collection = CollectionFactory.getInstance().getCollection("registration");
-		 FindIterable<Document> docs = collection.find(eq("email",email));
-		 for (Document document : docs) {
+		MongoCollection<Document> registrationCollection = CollectionFactory.getInstance().getCollection("registration");
+		 FindIterable<Document> rdocs = registrationCollection.find(eq("email",email));
+		 for (Document document : rdocs) {
 			if(document.getString("email").equals(email)){
+				Date expiryDate = document.getDate("expiryDate");
+				MongoCollection<Document> memberCollection = CollectionFactory.getInstance().getCollection("members");
+				boolean isUserAlreadyMember = false;
+				FindIterable<Document> mdocs = memberCollection.find(eq("email",email));
+				for (Document mdoc : mdocs) {
+					if(mdoc.getString("email").equals(email)){
+						isUserAlreadyMember = true;
+						// User is already a member, why to register ?
+					}
+				}
+				Calendar cal = Calendar.getInstance();
+				if(!isUserAlreadyMember && expiryDate.getTime() - cal.getTime().getTime() <= 0){
+					// Registration expire date is passed, let user re-register if is not a member.
+					registrationCollection.deleteMany(eq("email", email));
+					break;
+				}
 				throw new UserAlreadyExistsException("User already exists");
 			}
 		 }
@@ -35,7 +51,12 @@ public class RegisterImpl implements Register {
          .append("password", password)
          .append("token", token)
          .append("expiryDate", expiryDate);
-		 collection.insertOne(doc);
+		 registrationCollection.insertOne(doc);
+		 /*TODO
+		  * send e-mail.
+		  * 
+		  * */
+		 
 	}
 	
 	public void validate(String token) throws RegistrationExpiredException, TokenNotFoundException {
