@@ -1,39 +1,49 @@
 package registration.service.impl;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import static com.mongodb.client.model.Filters.eq;
 
 import registration.exception.RegistrationExpiredException;
 import registration.exception.TokenNotFoundException;
 import registration.exception.UserAlreadyExistsException;
 import registration.service.Register;
 
-import com.imars.core.mongodb.CollectionFactory;
+import com.imars.core.service.CollectionFactoryService;
+import com.imars.core.service.EmailService;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
 @Service
 public class RegisterImpl implements Register {
+		
+	@Autowired
+	CollectionFactoryService collectionFactoryService;
+	
+	@Autowired
+	EmailService emailService;
+	
 
 	public void addRegistration(String email, String password) throws UserAlreadyExistsException {
-		MongoCollection<Document> registrationCollection = CollectionFactory.getInstance().getCollection("registration");
+		 MongoCollection<Document> registrationCollection = collectionFactoryService.getCollection("registration");
 		 FindIterable<Document> rdocs = registrationCollection.find(eq("email",email));
 		 for (Document document : rdocs) {
 			if(document.getString("email").equals(email)){
 				Date expiryDate = document.getDate("expiryDate");
-				MongoCollection<Document> memberCollection = CollectionFactory.getInstance().getCollection("members");
+				MongoCollection<Document> memberCollection = collectionFactoryService.getCollection("members");
 				boolean isUserAlreadyMember = false;
 				FindIterable<Document> mdocs = memberCollection.find(eq("email",email));
 				for (Document mdoc : mdocs) {
 					if(mdoc.getString("email").equals(email)){
-						isUserAlreadyMember = true;
 						// User is already a member, why to register ?
+						isUserAlreadyMember = true;
 					}
 				}
 				Calendar cal = Calendar.getInstance();
@@ -52,15 +62,12 @@ public class RegisterImpl implements Register {
          .append("token", token)
          .append("expiryDate", expiryDate);
 		 registrationCollection.insertOne(doc);
-		 /*TODO
-		  * send e-mail.
-		  * 
-		  * */
+		 emailService.sendEmail(email, "Imars Registration Confirmation", generateRegistrationMessage(token));
 		 
 	}
 	
 	public void validate(String token) throws RegistrationExpiredException, TokenNotFoundException {
-		MongoCollection<Document> registrations = CollectionFactory.getInstance().getCollection("registration");
+		MongoCollection<Document> registrations = collectionFactoryService.getCollection("registration");
 		FindIterable<Document> docs = registrations.find(eq("token", token));
 		 boolean foundToken = false;
 		 for (Document document : docs) {
@@ -71,7 +78,7 @@ public class RegisterImpl implements Register {
 					throw new RegistrationExpiredException("Registration is expired");
 				}
 				foundToken = true;
-				MongoCollection<Document> members = CollectionFactory.getInstance().getCollection("members");
+				MongoCollection<Document> members = collectionFactoryService.getCollection("members");
 				 Document member = new Document("email", document.getString("email"))
 		         .append("password", document.getString("password"))
 		         .append("activationDate", Calendar.getInstance().getTime());
@@ -90,6 +97,15 @@ public class RegisterImpl implements Register {
         cal.setTime(new Timestamp(cal.getTime().getTime()));
         cal.add(Calendar.MINUTE, expiryTimeInMinutes);
         return new Date(cal.getTime().getTime());
+    }
+    
+    /*@TODO
+    	Message must be taken from config files
+    */
+    private String generateRegistrationMessage(String token){
+    	String confirmationUrl = "http://localhost:8080/validate?token=" + token;
+    	String message = "Please validate your registration" + " rn" + confirmationUrl;
+    	return message;
     }
 
 

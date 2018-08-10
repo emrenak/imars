@@ -10,7 +10,6 @@ import registration.exception.TokenNotFoundException;
 import registration.exception.UserAlreadyExistsException;
 import registration.service.Register;
 
-
 @RestController
 public class RegistrationController {
 	
