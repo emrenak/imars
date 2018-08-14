@@ -16,37 +16,15 @@ public class RegistrationController {
 	@Autowired
 	Register register;
 	
-	@RequestMapping("/register")
-	public Validation register(@RequestParam(value="email", defaultValue="") String email, 
-			@RequestParam(value="password", defaultValue="") String password){
-		Validation validation = new Validation();
-		try {
-			register.addRegistration(email, password);
-			validation.setDescription("Check your email");
-			return validation;
-		}catch (UserAlreadyExistsException uee){
-			validation.setDescription(email + ", " + uee.getMessage());
-		}catch (Exception e) {
-			validation.setDescription("Error occured");
-		}
-		return validation;
+	@RequestMapping("/user/register")
+	public void register(@RequestParam(value="email", defaultValue="") String email, 
+			@RequestParam(value="password", defaultValue="") String password) throws UserAlreadyExistsException{
+		register.addRegistration(email, password);
 	}
 
 	
-	@RequestMapping("/validate")
-	public Validation validate(@RequestParam(value="token", defaultValue="") String token){
-		Validation validation = new Validation();
-		try {
-			register.validate(token);
-			validation.setDescription("Validation Succeeded");
-			return validation;
-		}catch (TokenNotFoundException tnfe){
-			validation.setDescription(tnfe.getMessage());
-		}catch(RegistrationExpiredException ree){
-			validation.setDescription(ree.getMessage());
-		}catch (Exception e) {
-			validation.setDescription("Error occured");
-		}
-		return validation;
+	@RequestMapping("/user/validate")
+	public void validate(@RequestParam(value="token", defaultValue="") String token) throws RegistrationExpiredException, TokenNotFoundException{
+		register.validate(token);
 	}
 }
