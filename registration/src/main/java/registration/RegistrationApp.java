@@ -9,13 +9,13 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 (scanBasePackages={"com.imars.core.service","registration"})
 @EnableDiscoveryClient
 @EnableConfigurationProperties(RegistrationAppProperties.class)
-public class App {
+public class RegistrationApp {
 
 	public static void main(String[] args) {
 		// Tell server to look for registration yml
 		System.setProperty("spring.config.name", "registration");
 		
-		SpringApplication.run(App.class, args);
+		SpringApplication.run(RegistrationApp.class, args);
 	}
 
 }
