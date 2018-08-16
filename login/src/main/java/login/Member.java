@@ -7,10 +7,8 @@ public class Member {
 	private String password;
 	private String gender;
 	private String name; 
+	private String surname;
 	private String nickname;
-	private String instruments;
-	private String musicStyle;
-	private String influences;
 	private String avatar;
 	private String status;
 	public String getEmail() {
@@ -43,24 +41,6 @@ public class Member {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	public String getInstruments() {
-		return instruments;
-	}
-	public void setInstruments(String instruments) {
-		this.instruments = instruments;
-	}
-	public String getMusicStyle() {
-		return musicStyle;
-	}
-	public void setMusicStyle(String musicStyle) {
-		this.musicStyle = musicStyle;
-	}
-	public String getInfluences() {
-		return influences;
-	}
-	public void setInfluences(String influences) {
-		this.influences = influences;
-	}
 	public String getAvatar() {
 		return avatar;
 	}
@@ -73,6 +53,13 @@ public class Member {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	public String getSurname() {
+		return surname;
+	}
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+	
 	
 	
 	

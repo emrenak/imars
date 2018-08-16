@@ -87,13 +87,6 @@ public class RegisterImpl implements Register {
 					throw new RegistrationExpiredException("Registration is expired");
 				}
 				foundToken = true;
-				MongoCollection<Document> members = collectionFactoryService.getCollection("members");
-				 Document member = new Document("email", document.getString("email"))
-		         .append("password", document.getString("password"))
-		         .append("status", "A")
-		         .append("activationDate", Calendar.getInstance().getTime());
-				 members.insertOne(member);
-				 logger.info(document.getString("email") + " is added as member");
 				break;
 		 }
 		 if(!foundToken){
@@ -109,13 +102,9 @@ public class RegisterImpl implements Register {
         return new Date(cal.getTime().getTime());
     }
     
-    /*@TODO
-    	Message must be taken from config files
-    */
     private String generateRegistrationMessage(String token){
     	String confirmationUrl = "http://localhost:8080/validate?token=" + token;
     	String message = registrationAppProperties.getValidationMessage() + " rn" + confirmationUrl;
-    	logger.info(message);
     	return message;
     }
 

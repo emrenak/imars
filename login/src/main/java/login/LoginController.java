@@ -29,13 +29,14 @@ public class LoginController {
 			@RequestParam(value="password", defaultValue="") String password,
 			@RequestParam(value="gender", defaultValue="") String gender,
 			@RequestParam(value="name", defaultValue="") String name,
+			@RequestParam(value="surname", defaultValue="") String surname,
 			@RequestParam(value="nickname", defaultValue="") String nickname,
 			@RequestParam(value="instruments", defaultValue="") String instruments,
 			@RequestParam(value="musicStyle", defaultValue="") String musicStyle,
 			@RequestParam(value="influences", defaultValue="") String influences,
 			@RequestParam(value="avatar", defaultValue="") String avatar,
 			@RequestParam(value="status", defaultValue="A") String status) throws MemberNotFoundException, NameException, NicknameException{
-		login.updateMember(email, password, gender, name, nickname, instruments, musicStyle, influences, avatar,status);
+		login.updateMember(email, password, gender, name, surname, nickname, instruments, musicStyle, influences, avatar,status);
 		
 	}
 	
@@ -45,8 +46,14 @@ public class LoginController {
 	}
 	
 
-	@RequestMapping("/member/getMember")
+	@RequestMapping("/member/get")
 	public Member getMember(@RequestParam(value="email", defaultValue="") String email) throws MemberNotFoundException{
 		return login.getMember(email);
+	}
+	
+	@RequestMapping("/member/add")
+	public void addMember(@RequestParam(value="email", defaultValue="") String email,
+			@RequestParam(value="password", defaultValue="") String password){
+		login.addMember(email, password);
 	}
 }

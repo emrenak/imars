@@ -37,5 +37,5 @@ eureka:
 
 
 # application parameters
-registration:
+musician:
  validationMessage: Please validate your registration

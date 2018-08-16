@@ -12,11 +12,13 @@ public interface LoginService {
 			throws PasswordExpiredException, MemberNotFoundException;
 
 	public void updateMember(String email, String password, String gender,
-			String name, String nickname, String instruments,
+			String name, String surname, String nickname, String instruments,
 			String musicStyle, String influences, String avatar, String status) throws MemberNotFoundException, NameException, NicknameException;
 	
 	public void deleteMember(String email);
 	
 	public Member getMember(String email) throws MemberNotFoundException;
+	
+	public void addMember(String email, String password);
 
 }

@@ -1,7 +1,11 @@
 package login.service.impl;
 
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.not;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.currentDate;
+import static com.mongodb.client.model.Updates.set;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -14,11 +18,13 @@ import login.exception.PasswordExpiredException;
 import login.service.LoginService;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
 import com.imars.core.service.CollectionFactoryService;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -53,7 +59,7 @@ public class LoginServiceImpl implements LoginService{
 	}
 
 	public void updateMember(String email, String password, String gender,
-			String name, String nickname, String instruments,
+			String name, String surname, String nickname, String instruments,
 			String musicStyle, String influences, String avatar, String status) throws MemberNotFoundException, NameException, NicknameException {
 		logger.trace("inside updateMember:" + email);
 		MongoCollection<Document> membersCollection = collectionFactoryService.getCollection("members");
@@ -70,17 +76,11 @@ public class LoginServiceImpl implements LoginService{
 			if("".equals(name)){
 				name = mdoc.getString("name");
 			}
+			if("".equals(surname)){
+				surname = mdoc.getString("surname");
+			}
 			if("".equals(nickname)){
 				nickname = mdoc.getString("nickname");
-			}
-			if("".equals(instruments)){
-				instruments = mdoc.getString("instruments");
-			}
-			if("".equals(musicStyle)){
-				musicStyle = mdoc.getString("musicStyle");
-			}
-			if("".equals(influences)){
-				influences = mdoc.getString("influences");
 			}
 			if("".equals(avatar)){
 				avatar = mdoc.getString("avatar");
@@ -100,8 +100,7 @@ public class LoginServiceImpl implements LoginService{
 			throw new NicknameException(nickname + " exists. Nickname must be unique");
 		}
 		membersCollection.updateOne(eq("email", email),
-		        combine(set("password", password), set("gender", gender), set("name", name),  set("nickname", nickname),  set("instruments", instruments),
-		        		set("musicStyle", musicStyle), set("influences", influences), set("avatar", avatar),   set("status", status), 
+		        combine(set("password", password), set("gender", gender), set("name", name), set("surname", surname), set("nickname", nickname), set("avatar", avatar), set("status", status), 
 		        		currentDate("lastModified")));
 		logger.info(email + " is updated");
 	}
@@ -119,26 +118,26 @@ public class LoginServiceImpl implements LoginService{
 		Member member = null;
 		MongoCollection<Document> membersCollection = collectionFactoryService.getCollection("members");
 		FindIterable<Document> mdocs = membersCollection.find(eq("email",email));
-		boolean isMemberFound = false;
 		for (Document mdoc : mdocs) {
-			isMemberFound = true;
-			member = new Member();
-			member.setEmail(email);
-			member.setAvatar(mdoc.getString("avatar"));
-			member.setGender(mdoc.getString("gender"));
-			member.setInfluences(mdoc.getString("influences"));
-			member.setInstruments(mdoc.getString("instruments"));
-			member.setMusicStyle(mdoc.getString("musicStyle"));
-			member.setName(mdoc.getString("name"));
-			member.setNickname(mdoc.getString("nickname"));
-			member.setPassword(mdoc.getString("password"));
-			member.setStatus(mdoc.getString("status"));
-			break;
+			Gson gson = new Gson();
+			member = gson.fromJson(mdoc.toJson(), Member.class);
 		}
-		if(!isMemberFound){
+		if(member==null){
 			throw new MemberNotFoundException(email + " member not found");
 		}
 		return member;
+	}
+
+	@Override
+	public void addMember(String email, String password) {
+		MongoCollection<Document> members = collectionFactoryService.getCollection("members");
+		 Document member = new Document("email", email)
+        .append("password",password)
+        .append("status", "A")
+        .append("activationDate", Calendar.getInstance().getTime());
+		 members.insertOne(member);
+		 logger.info(email + " is added as member");
+		
 	}
 
 }
