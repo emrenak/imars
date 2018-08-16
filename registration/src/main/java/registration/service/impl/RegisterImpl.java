@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import registration.RegistrationAppProperties;
 import registration.exception.RegistrationExpiredException;
 import registration.exception.TokenNotFoundException;
 import registration.exception.UserAlreadyExistsException;
@@ -33,6 +34,12 @@ public class RegisterImpl implements Register {
 	EmailService emailService;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	RegistrationAppProperties registrationAppProperties;
+	
+	public RegisterImpl(RegistrationAppProperties registrationAppProperties){
+		this.registrationAppProperties = registrationAppProperties;
+	}
 	
 	public void addRegistration(String email, String password) throws UserAlreadyExistsException {
 		logger.trace("inside addRegistration:" + email);
@@ -107,7 +114,8 @@ public class RegisterImpl implements Register {
     */
     private String generateRegistrationMessage(String token){
     	String confirmationUrl = "http://localhost:8080/validate?token=" + token;
-    	String message = "Please validate your registration" + " rn" + confirmationUrl;
+    	String message = registrationAppProperties.getValidationMessage() + " rn" + confirmationUrl;
+    	logger.info(message);
     	return message;
     }
 
