@@ -32,6 +32,7 @@ public class VirtuosityServiceImpl implements VirtuosityService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public Virtuoso get(String email) throws VirtuosityNotFoundException {
+		logger.trace("inside virtuoso get :" + email);
 		MongoCollection<Document> virtuosityCollection = collectionFactoryService.getCollection("virtuosity");
 		FindIterable<Document> mdocs = virtuosityCollection.find(eq("email",email));
 		Virtuoso virtuoso = null;
@@ -98,6 +99,7 @@ public class VirtuosityServiceImpl implements VirtuosityService {
 			documentMapDetail.put(instrument, level);
 			virtuosityCollection.updateOne(eq("email", email),
 			        combine(set("instrumentList", documentMapDetail),currentDate("lastModified")));
+			 logger.info(email + " virtuosity is updated");
 		 }
 		
 	}
