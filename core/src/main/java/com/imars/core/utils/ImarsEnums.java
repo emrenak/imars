@@ -130,4 +130,34 @@ public class ImarsEnums {
 		}
     	
     }
+    
+    public enum Wealth{
+    	HOUSE("house"),CAR("car"),PLANE("plane"),YATCH("yatch"),MONEY("money"),INSTRUMENTS("instruments");
+    	
+    	private String value;
+        
+        private Wealth(String value){
+        	this.setValue(value);
+        }
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+		
+		
+		public static Wealth fromValue(String value) {
+			for (Wealth category : values()) {
+				if (category.value.equalsIgnoreCase(value)) {
+					return category;
+				}
+			}
+			throw new IllegalArgumentException(
+					"Unknown enum type " + value + ", Allowed values are " + Arrays.toString(values()));
+		}
+    	
+    }
 }
