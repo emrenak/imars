@@ -1,5 +1,7 @@
 package musician;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
 
 public class Musician {
@@ -13,7 +15,7 @@ public class Musician {
 	private ObjectId bandId;
 	private ObjectId wealthId;
 	private ObjectId healthId;
-	private ObjectId scheduleId;
+	private List<ObjectId> scheduleIdList;
 	public String getEmail() {
 		return email;
 	}
@@ -68,11 +70,11 @@ public class Musician {
 	public void setHealthId(ObjectId healthId) {
 		this.healthId = healthId;
 	}
-	public ObjectId getScheduleId() {
-		return scheduleId;
+	public List<ObjectId> getScheduleIdList() {
+		return scheduleIdList;
 	}
-	public void setScheduleId(ObjectId scheduleId) {
-		this.scheduleId = scheduleId;
+	public void setScheduleIdList(List<ObjectId> scheduleId) {
+		this.scheduleIdList = scheduleId;
 	}
 	
 	

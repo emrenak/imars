@@ -160,4 +160,103 @@ public class ImarsEnums {
 		}
     	
     }
+    
+    public enum ScheduleType{
+    	PRACTICEINSTRUMENT("practiceinstrument"),
+    	AUDITION("audition"),
+    	REHERSAL("rehersal"),
+    	CONCERT("concert"),
+    	MEETING("meeting"),
+    	ALBUMMAKING("albummaking");
+    	
+    	private String value;
+        
+        private ScheduleType(String value){
+        	this.setValue(value);
+        }
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+		
+		
+		public static ScheduleType fromValue(String value) {
+			for (ScheduleType category : values()) {
+				if (category.value.equalsIgnoreCase(value)) {
+					return category;
+				}
+			}
+			throw new IllegalArgumentException(
+					"Unknown enum type " + value + ", Allowed values are " + Arrays.toString(values()));
+		}
+    }
+
+    public enum ScheduleActivityType{
+    	INDIVIDUAL("individual"),
+    	BAND("band");
+    	
+    	private String value;
+        
+        private ScheduleActivityType(String value){
+        	this.setValue(value);
+        }
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+		
+		
+		public static ScheduleActivityType fromValue(String value) {
+			for (ScheduleActivityType category : values()) {
+				if (category.value.equalsIgnoreCase(value)) {
+					return category;
+				}
+			}
+			throw new IllegalArgumentException(
+					"Unknown enum type " + value + ", Allowed values are " + Arrays.toString(values()));
+		}
+    }
+    
+    public enum ScheduleActivityStatus{
+    	SCHEDULED("scheduled"),
+    	INPROGRESS("band"),
+    	COMPLETED("completed"),
+    	NOTCOMPLETED("notcompleted"),
+    	CANCELLED("cancelled");
+    	
+    	
+    	private String value;
+        
+        private ScheduleActivityStatus(String value){
+        	this.setValue(value);
+        }
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+		
+		
+		public static ScheduleActivityStatus fromValue(String value) {
+			for (ScheduleActivityStatus category : values()) {
+				if (category.value.equalsIgnoreCase(value)) {
+					return category;
+				}
+			}
+			throw new IllegalArgumentException(
+					"Unknown enum type " + value + ", Allowed values are " + Arrays.toString(values()));
+		}
+    }
+    
 }
