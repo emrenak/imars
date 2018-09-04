@@ -3,6 +3,7 @@ package musicianScheduler;
 import java.util.Date;
 import java.util.List;
 
+import musicianScheduler.exception.ScheduleIsNotUpdatedException;
 import musicianScheduler.service.MusicianSchedulerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +28,15 @@ public class MusicianSchedulerController {
 	public void addSchedule(@RequestParam(value="email", defaultValue="") String email,
 			@RequestParam(value="scheduleType" , defaultValue="") String scheduleType,
 			@RequestParam(value="scheduleActivityType", defaultValue="")  String scheduleActivityType,
-			@RequestParam(value="scheduleTime") @DateTimeFormat(iso = ISO.DATE_TIME) Date scheduleTime){ //yyyy-MM-dd'T'HH:mm:ss.SSSZ 2000-10-31T01:30:00.000-05:00
-		musicianSchedulerService.addSchedule(email, scheduleType, scheduleActivityType, scheduleTime);
+			@RequestParam(value="scheduleStartTime") @DateTimeFormat(iso = ISO.DATE_TIME) Date scheduleStartTime,
+			@RequestParam(value="scheduleEndTime") @DateTimeFormat(iso = ISO.DATE_TIME) Date scheduleEndTime){ //yyyy-MM-dd'T'HH:mm:ss.SSSZ 2000-10-31T01:30:00.000-05:00
+		musicianSchedulerService.addSchedule(email, scheduleType, scheduleActivityType, scheduleStartTime, scheduleEndTime);
 	}
 	
 	@RequestMapping("/musicianScheduler/remove")
 	public void removeSchedule(@RequestParam(value="email", defaultValue="") String email,
-			@RequestParam(value="scheduleId", defaultValue="") String scheduleId){
+			@RequestParam(value="scheduleId", defaultValue="") String scheduleId) throws ScheduleIsNotUpdatedException{
+		musicianSchedulerService.removeSchedule(email, scheduleId);
 		
 	}
 	
@@ -41,9 +44,11 @@ public class MusicianSchedulerController {
 	public void updateSchedule(@RequestParam(value="email", defaultValue="") String email,
 			@RequestParam(value="scheduleType", defaultValue="") String scheduleType,
 			@RequestParam(value="scheduleActivityType", defaultValue="") String scheduleActivityType,
-			@RequestParam(value="scheduleTime", defaultValue="")  Date scheduleTime,
+			@RequestParam(value="scheduleStartTime", defaultValue="") @DateTimeFormat(iso = ISO.DATE_TIME)  Date scheduleStartTime,
+			@RequestParam(value="scheduleEndTime", defaultValue="")  @DateTimeFormat(iso = ISO.DATE_TIME) Date scheduleEndTime,
 			@RequestParam(value="scheduleActivityStatus", defaultValue="") String scheduleActivityStatus,
-			@RequestParam(value="scheduleId", defaultValue="") String scheduleId){
+			@RequestParam(value="scheduleId", defaultValue="") String scheduleId) throws ScheduleIsNotUpdatedException{
+		musicianSchedulerService.updateSchedule(email, scheduleType, scheduleActivityType, scheduleStartTime, scheduleEndTime, scheduleActivityStatus, scheduleId);
 		
 	}
 	

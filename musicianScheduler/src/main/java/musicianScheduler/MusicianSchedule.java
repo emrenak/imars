@@ -5,7 +5,8 @@ public class MusicianSchedule {
 	private String email;
 	private String scheduleType;
 	private String scheduleActivityType;
-	private String scheduleTime;
+	private String scheduleStartTime;
+	private String scheduleEndTime;
 	private String scheduleActivityStatus;
 	public String getEmail() {
 		return email;
@@ -25,16 +26,23 @@ public class MusicianSchedule {
 	public void setScheduleActivityType(String scheduleActivityType) {
 		this.scheduleActivityType = scheduleActivityType;
 	}
-	public String getScheduleTime() {
-		return scheduleTime;
-	}
-	public void setScheduleTime(String scheduleTime) {
-		this.scheduleTime = scheduleTime;
-	}
 	public String getScheduleActivityStatus() {
 		return scheduleActivityStatus;
 	}
 	public void setScheduleActivityStatus(String scheduleActivityStatus) {
 		this.scheduleActivityStatus = scheduleActivityStatus;
-	} 	
+	}
+	public String getScheduleStartTime() {
+		return scheduleStartTime;
+	}
+	public void setScheduleStartTime(String scheduleStartTime) {
+		this.scheduleStartTime = scheduleStartTime;
+	}
+	public String getScheduleEndTime() {
+		return scheduleEndTime;
+	}
+	public void setScheduleEndTime(String scheduleEndTime) {
+		this.scheduleEndTime = scheduleEndTime;
+	}
+	
 }
