@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import musicianScheduler.MusicianSchedule;
+import musicianScheduler.exception.ActivityAlreadyRunException;
+import musicianScheduler.exception.ActivityCouldNotBeExecutedException;
+import musicianScheduler.exception.ActivityExpiredException;
 import musicianScheduler.exception.ScheduleIsNotUpdatedException;
 
 public interface MusicianSchedulerService {
@@ -25,4 +28,6 @@ public interface MusicianSchedulerService {
 			String scheduleId) throws ScheduleIsNotUpdatedException;
 
 	public void removeSchedule(String email, String scheduleId) throws ScheduleIsNotUpdatedException;
+	
+	public void runActivity(String email, String scheduleId) throws ActivityExpiredException, ActivityCouldNotBeExecutedException, ActivityAlreadyRunException;
 }

@@ -5,11 +5,20 @@ import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.currentDate;
 import static com.mongodb.client.model.Updates.set;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import musicianScheduler.MusicianSchedule;
+import musicianScheduler.exception.ActivityAlreadyRunException;
+import musicianScheduler.exception.ActivityCouldNotBeExecutedException;
+import musicianScheduler.exception.ActivityExpiredException;
 import musicianScheduler.exception.ScheduleIsNotUpdatedException;
 import musicianScheduler.service.MusicianSchedulerService;
 
@@ -18,6 +27,8 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -28,8 +39,11 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.UpdateResult;
 
 @Service
+@EnableAsync
 public class MusicianSchedulerServiceImpl implements MusicianSchedulerService {
 
+	private static final  SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", new Locale("us"));
+	
 	@Autowired
 	CollectionFactoryService collectionFactoryService;
 	
@@ -100,4 +114,72 @@ public class MusicianSchedulerServiceImpl implements MusicianSchedulerService {
 		
 	}
 
+	@Override
+	@Async
+	public void runActivity(String email, String scheduleId) throws ActivityExpiredException, ActivityCouldNotBeExecutedException, ActivityAlreadyRunException {
+		MongoCollection<Document> musicianScheduleCollection = collectionFactoryService.getCollection("musicianschedule");
+		FindIterable<Document> mdocs = musicianScheduleCollection.find(eq("_id", new ObjectId(scheduleId)));
+		Document mdoc = mdocs.first();
+		if(mdoc != null){
+			isActivityEligible(email, scheduleId, musicianScheduleCollection, mdoc);
+			// update schedule as inprogress
+			musicianScheduleCollection.updateOne(eq("_id", new ObjectId(scheduleId)), 
+					 combine(set("scheduleActivityStatus", ScheduleActivityStatus.INPROGRESS.getValue()),
+					 currentDate("lastModified")));
+			//5 minutes of activity is 1 h. For each hour, count down from 5 minutes. Calculate number of activity periods, and count down (ap * 5min)
+			Timer timer = new Timer();
+			double calculatedActivityDuration = new Double (getActivityPeriod(mdoc.getString("scheduleStartTime"), mdoc.getString("scheduleEndTime"))); 
+			timer.scheduleAtFixedRate(new TimerTask() {
+            	double countDown = calculatedActivityDuration;
+				public void run() {
+	                countDown--;
+	            	if (countDown < 0){
+	                    timer.cancel();
+	                    // update activity as completed.
+	        	        musicianScheduleCollection.updateOne(eq("_id", new ObjectId(scheduleId)), 
+	          					combine(set("activityCompletionPercentage", 1), 
+	          							set("scheduleActivityStatus", ScheduleActivityStatus.COMPLETED.getValue()),
+	          							currentDate("lastModified")));
+	            	}else if (countDown % 20 == 0){
+	            		Double completedPerc =  (calculatedActivityDuration - countDown) / calculatedActivityDuration;
+	        			musicianScheduleCollection.updateOne(eq("_id", new ObjectId(scheduleId)), 
+	       					 combine(set("activityCompletionPercentage", completedPerc.toString()),
+	       					 currentDate("lastModified")));
+	            	}
+	            }
+	        }, 0, 1000);
+		}	
+		 
+	}
+	
+	private long getActivityPeriod(String start, String end){
+		try {
+			long startDate = formatter.parse(start).getTime();
+			long endDate = formatter.parse(end).getTime();
+			long diff = endDate - startDate;
+			return (diff / (12))/1000;
+		} catch (ParseException e) {
+			return -1;
+		}	
+	}
+	
+	private void isActivityEligible(String email,  String scheduleId, MongoCollection<Document> musicianScheduleCollection,Document mdoc) throws ActivityExpiredException, ActivityCouldNotBeExecutedException, ActivityAlreadyRunException{
+		Date endDate;
+		try {
+			endDate = formatter.parse( mdoc.getString("scheduleEndTime"));
+			if(Calendar.getInstance().getTime().after(endDate)){
+				musicianScheduleCollection.updateOne(eq("_id", new ObjectId(scheduleId)), 
+						 combine(set("scheduleActivityStatus", ScheduleActivityStatus.EXPIRED.getValue()),
+								 currentDate("lastModified")));
+				throw new ActivityExpiredException(email + " activity is expired");
+			}
+			String activityStatus = mdoc.getString("scheduleActivityStatus");
+			ScheduleActivityStatus status = ScheduleActivityStatus.fromValue(activityStatus);
+			if(!ScheduleActivityStatus.SCHEDULED.equals(status)){
+				throw new ActivityAlreadyRunException(email + " activity already run");
+			}
+		} catch (ParseException e) {
+			throw new ActivityCouldNotBeExecutedException(email + " activity could not be executed");
+		}
+	}
 }

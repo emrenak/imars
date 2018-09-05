@@ -227,11 +227,11 @@ public class ImarsEnums {
     
     public enum ScheduleActivityStatus{
     	SCHEDULED("scheduled"),
-    	INPROGRESS("band"),
+    	INPROGRESS("inProgress"),
     	COMPLETED("completed"),
-    	NOTCOMPLETED("notcompleted"),
-    	CANCELLED("cancelled");
-    	
+    	NOTCOMPLETED("notCompleted"),
+    	CANCELLED("cancelled"),
+    	EXPIRED("expired");
     	
     	private String value;
         

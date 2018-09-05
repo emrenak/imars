@@ -3,6 +3,9 @@ package musicianScheduler;
 import java.util.Date;
 import java.util.List;
 
+import musicianScheduler.exception.ActivityAlreadyRunException;
+import musicianScheduler.exception.ActivityCouldNotBeExecutedException;
+import musicianScheduler.exception.ActivityExpiredException;
 import musicianScheduler.exception.ScheduleIsNotUpdatedException;
 import musicianScheduler.service.MusicianSchedulerService;
 
@@ -50,6 +53,14 @@ public class MusicianSchedulerController {
 			@RequestParam(value="scheduleId", defaultValue="") String scheduleId) throws ScheduleIsNotUpdatedException{
 		musicianSchedulerService.updateSchedule(email, scheduleType, scheduleActivityType, scheduleStartTime, scheduleEndTime, scheduleActivityStatus, scheduleId);
 		
+	}
+	
+	@RequestMapping("/musicianScheduler/kickOffActivity")
+	public void kickOffActivity(@RequestParam(value="email", defaultValue="") String email,
+			@RequestParam(value="scheduleId", defaultValue="") String scheduleId) throws ActivityExpiredException, ActivityCouldNotBeExecutedException, ActivityAlreadyRunException{
+		musicianSchedulerService.runActivity(email, scheduleId);
+		//TODO
+		//Since runActivity is async, exceptions are not thrown to client, think about it.
 	}
 	
 	
