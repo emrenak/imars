@@ -4,6 +4,10 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.currentDate;
 import static com.mongodb.client.model.Updates.set;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import musicianhealth.MusicianHealth;
 import musicianhealth.exception.MusicianHealthNotFoundException;
 import musicianhealth.service.MusicianHealthService;
@@ -18,6 +22,7 @@ import com.google.gson.Gson;
 import com.imars.core.service.CollectionFactoryService;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Sorts;
 
 @Service
 public class MusicianHealthServiceImpl implements MusicianHealthService {
@@ -31,14 +36,13 @@ public class MusicianHealthServiceImpl implements MusicianHealthService {
 		logger.trace("inside musicianhealth get :" + email);
 		MongoCollection<Document> musicianHealthCollection = collectionFactoryService.getCollection("musicianhealth");
 		FindIterable<Document> mdocs = musicianHealthCollection.find(eq("email",email));
+		Document doc = mdocs.first();
 		MusicianHealth musicianHealth = null;
-		for (Document mdoc : mdocs) {
+		if(doc != null){
 			Gson gson = new Gson();
-			musicianHealth = gson.fromJson(mdoc.toJson(), MusicianHealth.class);
-			break;
-		}
-		if(musicianHealth == null){
-			throw new MusicianHealthNotFoundException(email + " musicianhealth not found");
+			musicianHealth = gson.fromJson(doc.toJson(), MusicianHealth.class);
+		}else{
+			throw new MusicianHealthNotFoundException(email + " musicianhealth not found");	
 		}
 		return musicianHealth;
 	}
@@ -62,6 +66,20 @@ public class MusicianHealthServiceImpl implements MusicianHealthService {
 	        .append("level",adjustment);
 		 musicianHealthCollection.insertOne(member);
 		 logger.info(email + " musician health is added");
+	}
+	
+	public List<MusicianHealth> rankByHealthLevel(){
+		logger.trace("inside rankByHealthLevel");
+		List<MusicianHealth> musicianHealths = new ArrayList<MusicianHealth>();
+		MongoCollection<Document> musicianHealthCollection = collectionFactoryService.getCollection("musicianhealth");
+		FindIterable<Document> mdocs = musicianHealthCollection.find();
+		mdocs.sort(Sorts.descending("level"));
+		for (Document doc : mdocs) {
+			Gson gson = new Gson();
+			MusicianHealth musicianHealth = gson.fromJson(doc.toJson(), MusicianHealth.class);
+			musicianHealths.add(musicianHealth);
+		}
+		return musicianHealths;
 	}
 
 }

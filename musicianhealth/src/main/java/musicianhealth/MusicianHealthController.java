@@ -1,5 +1,7 @@
 package musicianhealth;
 
+import java.util.List;
+
 import musicianhealth.exception.MusicianHealthNotFoundException;
 import musicianhealth.service.MusicianHealthService;
 
@@ -24,5 +26,10 @@ public class MusicianHealthController {
 	public void adjustMusicianHealth(@RequestParam(value="email", defaultValue="") String email,
 			@RequestParam(value="adjustment") int adjustment){
 		musicianHealthService.adjustMusicianHealth(email, adjustment);
+	}
+	
+	@RequestMapping("/musicianhealth/rankByHealthLevel")
+	public List<MusicianHealth> rankByHealthLevel(){
+		return musicianHealthService.rankByHealthLevel();
 	}
 }

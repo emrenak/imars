@@ -1,5 +1,7 @@
 package musicianwealth;
 
+import java.util.List;
+
 import musicianwealth.exception.MusicianWealthNotFoundException;
 import musicianwealth.service.MusicianWealthService;
 
@@ -31,5 +33,10 @@ public class MusicianWealthController {
 			@RequestParam(value="asset", defaultValue="") String asset,
 			@RequestParam(value="numOfAsset") int numOfAsset){
 		musicianWealthService.addAssets(email, asset, numOfAsset);
+	}
+	
+	@RequestMapping("/musicianwealth/rankByWealthLevel")
+	public List<MusicianWealth> rankByWealthLevel(){
+		return musicianWealthService.rankByWealthLevel();
 	}
 }

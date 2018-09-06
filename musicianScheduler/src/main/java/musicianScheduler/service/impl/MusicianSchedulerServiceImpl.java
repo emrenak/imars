@@ -48,7 +48,7 @@ public class MusicianSchedulerServiceImpl implements MusicianSchedulerService {
 	CollectionFactoryService collectionFactoryService;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+		
 	public void addSchedule(String email, String scheduleType,
 			String scheduleActivityType, Date scheduleStartTime, Date scheduleEndTime) {
 		logger.trace("inside addSchedule :" + email);
@@ -171,7 +171,7 @@ public class MusicianSchedulerServiceImpl implements MusicianSchedulerService {
 				musicianScheduleCollection.updateOne(eq("_id", new ObjectId(scheduleId)), 
 						 combine(set("scheduleActivityStatus", ScheduleActivityStatus.EXPIRED.getValue()),
 								 currentDate("lastModified")));
-				throw new ActivityExpiredException(email + " activity is expired");
+				//throw new ActivityExpiredException(email + " activity is expired");
 			}
 			String activityStatus = mdoc.getString("scheduleActivityStatus");
 			ScheduleActivityStatus status = ScheduleActivityStatus.fromValue(activityStatus);
@@ -179,6 +179,9 @@ public class MusicianSchedulerServiceImpl implements MusicianSchedulerService {
 				throw new ActivityAlreadyRunException(email + " activity already run");
 			}
 		} catch (ParseException e) {
+			musicianScheduleCollection.updateOne(eq("_id", new ObjectId(scheduleId)), 
+					 combine(set("scheduleActivityStatus", ScheduleActivityStatus.ERROR.getValue()),
+							 currentDate("lastModified")));
 			throw new ActivityCouldNotBeExecutedException(email + " activity could not be executed");
 		}
 	}

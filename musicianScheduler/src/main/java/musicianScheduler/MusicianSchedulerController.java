@@ -60,7 +60,7 @@ public class MusicianSchedulerController {
 			@RequestParam(value="scheduleId", defaultValue="") String scheduleId) throws ActivityExpiredException, ActivityCouldNotBeExecutedException, ActivityAlreadyRunException{
 		musicianSchedulerService.runActivity(email, scheduleId);
 		//TODO
-		//Since runActivity is async, exceptions are not thrown to client, think about it.
+		//Since runActivity is async, exceptions are not thrown to client, think about it. For now, updating the status in mongo. 
 	}
 	
 	

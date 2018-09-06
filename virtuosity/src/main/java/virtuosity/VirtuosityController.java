@@ -1,5 +1,7 @@
 package virtuosity;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +25,6 @@ public class VirtuosityController {
 	public void addInstrument(@RequestParam(value="email", defaultValue="") String email,
 			@RequestParam(value="instrument", defaultValue="") String instrument){
 		virtuosityService.addInstrument(email, instrument);
-		
 	}
 	
 	@RequestMapping("/virtuosity/removeInstrument")
@@ -40,5 +41,9 @@ public class VirtuosityController {
 		virtuosityService.adjustVirtuosityLevel(email, instrument, adjustment);
 	}
 	
+	@RequestMapping("/virtuosity/rankByVirtuosityLevel")
+	public List<VirtuosoLevelDTO> rankByVirtuosityLevel(String instrument){
+		return virtuosityService.rankByVirtuosityLevel(instrument);
+	}
 	
 }

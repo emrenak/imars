@@ -39,3 +39,6 @@ eureka:
 # application parameters
 musicianscheduler:
  validationMessage: Please validate your registration
+ schedulerCoreThreadPoolSize : 3
+ schedulerMaxThreadPoolSize : 3
+ schedulerQueueCapacity : 500

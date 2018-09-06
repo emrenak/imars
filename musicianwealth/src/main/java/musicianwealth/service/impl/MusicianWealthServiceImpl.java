@@ -4,6 +4,10 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.currentDate;
 import static com.mongodb.client.model.Updates.set;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import musicianwealth.MusicianWealth;
 import musicianwealth.exception.MusicianWealthNotFoundException;
 import musicianwealth.service.MusicianWealthService;
@@ -18,6 +22,7 @@ import com.google.gson.Gson;
 import com.imars.core.service.CollectionFactoryService;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Sorts;
 
 @Service
 public class MusicianWealthServiceImpl implements MusicianWealthService {
@@ -28,23 +33,23 @@ public class MusicianWealthServiceImpl implements MusicianWealthService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public MusicianWealth get(String email) throws MusicianWealthNotFoundException {
-		logger.trace("inside musicianhealth get :" + email);
+		logger.trace("inside musicianwealth get :" + email);
 		MongoCollection<Document> musicianWealthCollection = collectionFactoryService.getCollection("musicianwealth");
 		FindIterable<Document> mdocs = musicianWealthCollection.find(eq("email",email));
-		MusicianWealth musicianHealth = null;
+		MusicianWealth musicianWealth = null;
 		for (Document mdoc : mdocs) {
 			Gson gson = new Gson();
-			musicianHealth = gson.fromJson(mdoc.toJson(), MusicianWealth.class);
+			musicianWealth = gson.fromJson(mdoc.toJson(), MusicianWealth.class);
 			break;
 		}
-		if(musicianHealth == null){
+		if(musicianWealth == null){
 			throw new MusicianWealthNotFoundException(email + " musicianwealth not found");
 		}
-		return musicianHealth;
+		return musicianWealth;
 	}
 
 	public void adjustMusicianWealth(String email, int adjustment) {
-		logger.trace("inside adjustMusicianHealth :" + email);
+		logger.trace("inside adjustMusicianWealth :" + email);
 		MongoCollection<Document> musicianWealthCollection = collectionFactoryService.getCollection("musicianwealth");
 		FindIterable<Document> mdocs = musicianWealthCollection.find(eq("email",email));
 		for (Document doc : mdocs) {
@@ -81,6 +86,21 @@ public class MusicianWealthServiceImpl implements MusicianWealthService {
 		}
 		
 	}
+	
+	public List<MusicianWealth> rankByWealthLevel(){
+		logger.trace("inside rankByWealthLevel");
+		List<MusicianWealth> musicianWealths = new ArrayList<MusicianWealth>();
+		MongoCollection<Document> musicianWealthCollection = collectionFactoryService.getCollection("musicianwealth");
+		FindIterable<Document> mdocs = musicianWealthCollection.find();
+		mdocs.sort(Sorts.descending("level"));
+		for (Document doc : mdocs) {
+			Gson gson = new Gson();
+			MusicianWealth musicianWealth = gson.fromJson(doc.toJson(), MusicianWealth.class);
+			musicianWealths.add(musicianWealth);
+		}
+		return musicianWealths;
+	}
+
 	
 	//TODO a level calculator is needed. it may be called from addassets
 

@@ -5,7 +5,10 @@ import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.currentDate;
 import static com.mongodb.client.model.Updates.set;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import virtuosity.Virtuoso;
+import virtuosity.VirtuosoLevelDTO;
 import virtuosity.exception.VirtuosityNotFoundException;
 import virtuosity.service.VirtuosityService;
 
@@ -102,6 +106,25 @@ public class VirtuosityServiceImpl implements VirtuosityService {
 			 logger.info(email + " virtuosity is updated");
 		 }
 		
+	}
+	
+	public List<VirtuosoLevelDTO> rankByVirtuosityLevel(String instrument){
+		logger.trace("inside rankByVirtuosityLevel");
+		List<VirtuosoLevelDTO> virtuosities = new ArrayList<VirtuosoLevelDTO>();
+		MongoCollection<Document> virtuosityCollection = collectionFactoryService.getCollection("virtuosity");
+		FindIterable<Document> mdocs = virtuosityCollection.find();
+		for (Document doc : mdocs) {
+			Map<String, Integer> documentMapDetail = doc.get("instrumentList", Map.class);
+			if(documentMapDetail.containsKey(instrument)){
+				VirtuosoLevelDTO virtuosoLevelDTO = new VirtuosoLevelDTO();
+				virtuosoLevelDTO.setEmail(doc.getString("email"));
+				virtuosoLevelDTO.setInstrument(instrument);
+				virtuosoLevelDTO.setLevel(documentMapDetail.get(instrument));
+				virtuosities.add(virtuosoLevelDTO);	
+			}
+		}
+		virtuosities.sort(Comparator.comparingInt(VirtuosoLevelDTO::getLevel).reversed());
+		return virtuosities;
 	}
 	
 }

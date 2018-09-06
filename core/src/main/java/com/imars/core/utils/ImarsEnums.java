@@ -231,7 +231,8 @@ public class ImarsEnums {
     	COMPLETED("completed"),
     	NOTCOMPLETED("notCompleted"),
     	CANCELLED("cancelled"),
-    	EXPIRED("expired");
+    	EXPIRED("expired"),
+    	ERROR("error");
     	
     	private String value;
         
