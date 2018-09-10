@@ -39,3 +39,6 @@ eureka:
 # application parameters
 musicianprofiler:
  validationMessage: Please validate your registration
+ schedulerCoreThreadPoolSize : 3
+ schedulerMaxThreadPoolSize : 3
+ schedulerQueueCapacity : 500

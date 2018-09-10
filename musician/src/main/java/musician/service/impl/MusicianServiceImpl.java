@@ -31,8 +31,8 @@ public class MusicianServiceImpl implements MusicianService {
 	public void updateMusician(String email, String instruments,
 			String musicStyle, String influences) throws MusicianNotFoundException {
 		logger.trace("inside updateMusician:" + email);
-		MongoCollection<Document> membersCollection = collectionFactoryService.getCollection("musicians");
-		FindIterable<Document> mdocs = membersCollection.find(eq("email",email));
+		MongoCollection<Document> musicianCollection = collectionFactoryService.getCollection("musicians");
+		FindIterable<Document> mdocs = musicianCollection.find(eq("email",email));
 		boolean isMusicianFound = false;
 		for (Document mdoc : mdocs) {
 			isMusicianFound = true;
@@ -50,7 +50,7 @@ public class MusicianServiceImpl implements MusicianService {
 		if(!isMusicianFound){
 			throw new MusicianNotFoundException(email + " musician not found");
 		}
-		membersCollection.updateOne(eq("email", email),
+		musicianCollection.updateOne(eq("email", email),
 		        combine(set("instruments", instruments), set("musicStyle", musicStyle), set("influences", influences), 
 		        		currentDate("lastModified")));
 		logger.info(email + " musician is updated");
@@ -60,8 +60,8 @@ public class MusicianServiceImpl implements MusicianService {
 	@Override
 	public Musician getMusician(String email) throws MusicianNotFoundException {
 		logger.trace("inside getMusician:" + email);
-		MongoCollection<Document> membersCollection = collectionFactoryService.getCollection("musicians");
-		FindIterable<Document> mdocs = membersCollection.find(eq("email",email));
+		MongoCollection<Document> musicianCollection = collectionFactoryService.getCollection("musicians");
+		FindIterable<Document> mdocs = musicianCollection.find(eq("email",email));
 		Musician musician = null;
 		for (Document mdoc : mdocs) {
 			Gson gson = new Gson();
