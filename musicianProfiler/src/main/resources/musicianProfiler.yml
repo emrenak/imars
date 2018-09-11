@@ -42,3 +42,9 @@ musicianprofiler:
  schedulerCoreThreadPoolSize : 3
  schedulerMaxThreadPoolSize : 3
  schedulerQueueCapacity : 500
+ healthServiceUrl : http://localhost:2227/musicianhealth/get
+ wealthServiceUrl : http://localhost:2228/musicianwealth/get
+ virtuosoServiceUrl : http://localhost:2226/virtuosity/get
+ 
+ 
+ 

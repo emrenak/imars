@@ -2,7 +2,8 @@ package virtuosity.service;
 
 import java.util.List;
 
-import virtuosity.Virtuoso;
+import com.imars.core.domain.Virtuoso;
+
 import virtuosity.VirtuosoLevelDTO;
 import virtuosity.exception.VirtuosityNotFoundException;
 

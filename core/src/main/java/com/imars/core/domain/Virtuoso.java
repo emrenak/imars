@@ -1,4 +1,4 @@
-package virtuosity;
+package com.imars.core.domain;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,17 +9,17 @@ public class Virtuoso {
 
 	private String email;
 	private ObjectId musicianId;
-	private Map<String, Object> instrumentList = new HashMap<String, Object>();
+	private Map<String, Integer> instrumentList = new HashMap<String, Integer>();
 	public ObjectId getMusicianId() {
 		return musicianId;
 	}
 	public void setMusicianId(ObjectId musicianId) {
 		this.musicianId = musicianId;
 	}
-	public Map<String, Object> getInstrumentList() {
+	public Map<String, Integer> getInstrumentList() {
 		return instrumentList;
 	}
-	public void setInstrumentList(Map<String, Object> virtuosityLevel) {
+	public void setInstrumentList(Map<String, Integer> virtuosityLevel) {
 		this.instrumentList = virtuosityLevel;
 	}
 	public String getEmail() {

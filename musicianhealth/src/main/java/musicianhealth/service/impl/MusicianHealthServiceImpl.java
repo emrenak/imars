@@ -8,7 +8,6 @@ import static com.mongodb.client.model.Updates.set;
 import java.util.ArrayList;
 import java.util.List;
 
-import musicianhealth.MusicianHealth;
 import musicianhealth.exception.MusicianHealthNotFoundException;
 import musicianhealth.service.MusicianHealthService;
 
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.imars.core.domain.MusicianHealth;
 import com.imars.core.service.CollectionFactoryService;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;

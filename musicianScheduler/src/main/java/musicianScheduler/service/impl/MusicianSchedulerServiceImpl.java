@@ -15,7 +15,6 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import musicianScheduler.MusicianSchedule;
 import musicianScheduler.exception.ActivityAlreadyRunException;
 import musicianScheduler.exception.ActivityCouldNotBeExecutedException;
 import musicianScheduler.exception.ActivityExpiredException;
@@ -32,6 +31,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.imars.core.domain.MusicianSchedule;
 import com.imars.core.service.CollectionFactoryService;
 import com.imars.core.utils.ImarsEnums.ScheduleActivityStatus;
 import com.mongodb.client.FindIterable;

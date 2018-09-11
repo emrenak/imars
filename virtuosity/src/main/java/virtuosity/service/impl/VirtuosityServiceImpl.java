@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import virtuosity.Virtuoso;
 import virtuosity.VirtuosoLevelDTO;
 import virtuosity.exception.VirtuosityNotFoundException;
 import virtuosity.service.VirtuosityService;
 
 import com.google.gson.Gson;
+import com.imars.core.domain.Virtuoso;
 import com.imars.core.service.CollectionFactoryService;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;

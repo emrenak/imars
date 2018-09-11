@@ -3,7 +3,8 @@ package musicianScheduler.service;
 import java.util.Date;
 import java.util.List;
 
-import musicianScheduler.MusicianSchedule;
+import com.imars.core.domain.MusicianSchedule;
+
 import musicianScheduler.exception.ActivityAlreadyRunException;
 import musicianScheduler.exception.ActivityCouldNotBeExecutedException;
 import musicianScheduler.exception.ActivityExpiredException;

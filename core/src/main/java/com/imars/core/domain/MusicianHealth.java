@@ -1,4 +1,4 @@
-package musicianhealth;
+package com.imars.core.domain;
 
 public class MusicianHealth {
 
@@ -15,6 +15,10 @@ public class MusicianHealth {
 	}
 	public void setLevel(int level) {
 		this.level = level;
+	}
+	@Override
+	public String toString() {
+		return "MusicianHealth [email=" + email + ", level=" + level + "]";
 	}
 	
 	

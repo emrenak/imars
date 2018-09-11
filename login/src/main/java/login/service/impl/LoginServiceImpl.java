@@ -118,11 +118,14 @@ public class LoginServiceImpl implements LoginService{
 		Member member = null;
 		MongoCollection<Document> membersCollection = collectionFactoryService.getCollection("members");
 		FindIterable<Document> mdocs = membersCollection.find(eq("email",email));
-		for (Document mdoc : mdocs) {
+		Document mdoc = mdocs.first();
+		if(mdoc!=null){
 			Gson gson = new Gson();
-			member = gson.fromJson(mdoc.toJson(), Member.class);
-		}
-		if(member==null){
+			member = gson.fromJson(mdoc.toJson(), Member.class);	
+			MongoCollection<Document> signInCollection = collectionFactoryService.getCollection("signIns");
+			Document signIned = new Document("email", email).append("loginDate", Calendar.getInstance().getTime());
+			signInCollection.insertOne(signIned);
+		}else{
 			throw new MemberNotFoundException(email + " member not found");
 		}
 		return member;

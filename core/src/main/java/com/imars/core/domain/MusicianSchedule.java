@@ -1,4 +1,4 @@
-package musicianScheduler;
+package com.imars.core.domain;
 
 public class MusicianSchedule {
 

@@ -2,7 +2,8 @@ package musicianwealth.service;
 
 import java.util.List;
 
-import musicianwealth.MusicianWealth;
+import com.imars.core.domain.MusicianWealth;
+
 import musicianwealth.exception.MusicianWealthNotFoundException;
 
 public interface MusicianWealthService {

@@ -2,7 +2,8 @@ package musicianhealth.service;
 
 import java.util.List;
 
-import musicianhealth.MusicianHealth;
+import com.imars.core.domain.MusicianHealth;
+
 import musicianhealth.exception.MusicianHealthNotFoundException;
 
 public interface MusicianHealthService {

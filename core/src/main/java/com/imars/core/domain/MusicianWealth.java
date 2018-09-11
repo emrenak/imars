@@ -1,4 +1,4 @@
-package musicianwealth;
+package com.imars.core.domain;
 
 public class MusicianWealth {
 
