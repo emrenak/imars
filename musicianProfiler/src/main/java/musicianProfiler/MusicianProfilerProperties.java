@@ -8,9 +8,6 @@ public class MusicianProfilerProperties {
 	private int schedulerCoreThreadPoolSize;
 	private int schedulerMaxThreadPoolSize;
 	private int schedulerQueueCapacity;
-	private String healthServiceUrl;
-	private String wealthServiceUrl;
-	private String virtuosoServiceUrl;
 	public String getValidationMessage() {
 		return validationMessage;
 	}
@@ -43,27 +40,4 @@ public class MusicianProfilerProperties {
 		this.schedulerQueueCapacity = schedulerQueueCapacity;
 	}
 
-	public String getHealthServiceUrl() {
-		return healthServiceUrl;
-	}
-
-	public void setHealthServiceUrl(String healthServiceUrl) {
-		this.healthServiceUrl = healthServiceUrl;
-	}
-
-	public String getWealthServiceUrl() {
-		return wealthServiceUrl;
-	}
-
-	public void setWealthServiceUrl(String wealthServiceUrl) {
-		this.wealthServiceUrl = wealthServiceUrl;
-	}
-
-	public String getVirtuosoServiceUrl() {
-		return virtuosoServiceUrl;
-	}
-
-	public void setVirtuosoServiceUrl(String virtuosoServiceUrl) {
-		this.virtuosoServiceUrl = virtuosoServiceUrl;
-	}
 }
