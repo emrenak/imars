@@ -4,6 +4,10 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.currentDate;
 import static com.mongodb.client.model.Updates.set;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import musician.Musician;
 import musician.exception.MusicianNotFoundException;
 import musician.service.MusicianService;
@@ -62,11 +66,11 @@ public class MusicianServiceImpl implements MusicianService {
 		logger.trace("inside getMusician:" + email);
 		MongoCollection<Document> musicianCollection = collectionFactoryService.getCollection("musicians");
 		FindIterable<Document> mdocs = musicianCollection.find(eq("email",email));
+		Document doc = mdocs.first();
 		Musician musician = null;
-		for (Document mdoc : mdocs) {
+		if(doc != null){
 			Gson gson = new Gson();
-			musician = gson.fromJson(mdoc.toJson(), Musician.class);
-			break;
+			musician = gson.fromJson(doc.toJson(), Musician.class);
 		}
 		if(musician == null){
 			throw new MusicianNotFoundException(email + " musician not found");
@@ -96,6 +100,21 @@ public class MusicianServiceImpl implements MusicianService {
 		}
 
 		
+	}
+
+	@Override
+	public List<Musician> getAllMusicians() {
+		logger.trace("inside getAllMusicians" );
+		MongoCollection<Document> musicianCollection = collectionFactoryService.getCollection("musicians");
+		FindIterable<Document> mdocs = musicianCollection.find();
+		List<Musician> musicianList = new ArrayList<Musician>();
+		for (Document mdoc : mdocs) {
+			Gson gson = new Gson();
+			Musician musician = gson.fromJson(mdoc.toJson(), Musician.class);
+			musicianList.add(musician);
+		}
+		
+		return musicianList;
 	}
 
 

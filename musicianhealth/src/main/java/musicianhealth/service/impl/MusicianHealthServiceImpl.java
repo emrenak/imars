@@ -56,6 +56,8 @@ public class MusicianHealthServiceImpl implements MusicianHealthService {
 			level += adjustment;
 			if(level<0){
 				level = 0;
+			}else if (level >= 100){
+				level = 100;
 			}
 			musicianHealthCollection.updateOne(eq("email", email),
 			        combine(set("level", level),currentDate("lastModified")));
@@ -63,7 +65,7 @@ public class MusicianHealthServiceImpl implements MusicianHealthService {
 			return;
 		}
 		Document member = new Document("email", email)
-	        .append("level",adjustment);
+	        .append("level",100);
 		 musicianHealthCollection.insertOne(member);
 		 logger.info(email + " musician health is added");
 	}

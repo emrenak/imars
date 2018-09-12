@@ -16,7 +16,7 @@ public class MusicianProfilerController {
 	
 	@RequestMapping("/musicianProfiler/get")
 	public List<MusicianProfile> get() {
-		return null;
+		return musicianProfilerService.get();
 	}
 	
 }

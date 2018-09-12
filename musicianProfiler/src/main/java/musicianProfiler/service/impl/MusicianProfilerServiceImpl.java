@@ -1,12 +1,16 @@
 package musicianProfiler.service.impl;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.currentDate;
+import static com.mongodb.client.model.Updates.set;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import musicianProfiler.MusicianProfile;
 import musicianProfiler.MusicianProfilerProperties;
 import musicianProfiler.service.MusicianProfilerService;
 
@@ -27,6 +31,17 @@ import com.imars.core.service.CollectionFactoryService;
 import com.imars.core.utils.ImarsEnums.ScheduleActivityStatus;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Sorts;
+
+/*
+ * criteria:
+ * health
+ * wealth
+ * virtuoso
+ * regular logins 
+ * regular attendance to activities
+ * amount of time spent in application
+ * */
 
 @Service
 @EnableAsync
@@ -45,6 +60,22 @@ public class MusicianProfilerServiceImpl implements MusicianProfilerService {
 	}
 
 	@Override
+	public List<MusicianProfile> get() {
+		logger.trace("inside get profile");
+		MongoCollection<Document> musicianScheduleCollection = collectionFactoryService.getCollection("musicianprofiling");
+		FindIterable<Document> mdocs = musicianScheduleCollection.find();
+		mdocs.sort(Sorts.descending("points"));
+		MusicianProfile musicianProfile = null;
+		List<MusicianProfile> musicianProfiles = new ArrayList<>();
+		for (Document mdoc : mdocs) {
+			Gson gson = new Gson();
+			musicianProfile = gson.fromJson(mdoc.toJson(), MusicianProfile.class);
+			musicianProfiles.add(musicianProfile);
+		}
+		return musicianProfiles;
+	}
+	
+	@Override
 	@Async
 	public void profile(int id, List<Document> musicianList) {
 		logger.trace("Inside profile for id:" + id);
@@ -62,16 +93,20 @@ public class MusicianProfilerServiceImpl implements MusicianProfilerService {
 			int regularAttendance = getRegularAttendances(email);
 			logger.info("Regular attendances:" + regularAttendance);
 			//amount of time spent in application ?? re-think
+			String points = ""+(virtuosityLevel + numberOfLogins + regularAttendance + (healthLevel/2) + wealthLevel);
+			MongoCollection<Document> profilingCollection = collectionFactoryService.getCollection("musicianprofiling");
+			FindIterable<Document> mdocs = profilingCollection.find(eq("email",email));
+			Document member = mdocs.first();
+			if(member == null){
+				 member = new Document("email", email)
+		        .append("points", points);
+				profilingCollection.insertOne(member);	
+			}else{
+				profilingCollection.updateOne(eq("email", email),
+				        combine(set("points", points),currentDate("lastModified")));
+			}
+			logger.info(email + " profiling is done");
 		}
-		/*
-		 * criteria:
-		 * health
-		 * wealth
-		 * virtuoso
-		 * regular logins 
-		 * regular attendance to activities
-		 * amount of time spent in application
-		 * */
 	}
 	
 

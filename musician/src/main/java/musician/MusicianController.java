@@ -1,5 +1,7 @@
 package musician;
 
+import java.util.List;
+
 import musician.exception.MusicianNotFoundException;
 import musician.service.MusicianService;
 
@@ -35,6 +37,12 @@ public class MusicianController {
 			@RequestParam(value="musicStyle", defaultValue="") String musicStyle,
 			@RequestParam(value="influences", defaultValue="") String influences) {
 		musicianService.addMusician(email, instruments, musicStyle, influences);
+		
+	}
+	
+	@RequestMapping("/musician/getAll")
+	public List<Musician> getAllMusicians() {
+		return musicianService.getAllMusicians();
 		
 	}
 }

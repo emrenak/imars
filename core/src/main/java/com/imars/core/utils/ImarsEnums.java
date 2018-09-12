@@ -260,4 +260,34 @@ public class ImarsEnums {
 		}
     }
     
+    public enum MessageStatus{
+    	READ("read"),
+    	UNREAD("unread");
+    	
+    	private String value;
+        
+        private MessageStatus(String value){
+        	this.setValue(value);
+        }
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+		
+		
+		public static MessageStatus fromValue(String value) {
+			for (MessageStatus status : values()) {
+				if (status.value.equalsIgnoreCase(value)) {
+					return status;
+				}
+			}
+			throw new IllegalArgumentException(
+					"Unknown enum type " + value + ", Allowed values are " + Arrays.toString(values()));
+		}
+    }
+    
 }

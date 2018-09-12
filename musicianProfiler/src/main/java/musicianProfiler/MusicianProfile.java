@@ -3,19 +3,17 @@ package musicianProfiler;
 public class MusicianProfile {
 
 	private String email;
-	private double overallPoints;
+	private String points;
 	public String getEmail() {
 		return email;
 	}
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public double getOverallPoints() {
-		return overallPoints;
+	public String getPoints() {
+		return points;
 	}
-	public void setOverallPoints(double overallPoints) {
-		this.overallPoints = overallPoints;
+	public void setPoints(String points) {
+		this.points = points;
 	}
-	
-	
 }
