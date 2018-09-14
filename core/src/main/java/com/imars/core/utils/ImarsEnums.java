@@ -3,6 +3,39 @@ package com.imars.core.utils;
 import java.util.Arrays;
 
 public class ImarsEnums {
+	
+	
+	public enum ImarsCollections {
+		MUSICIANS("musicians"), MEMBERS("members"), MUSICIANHEALTH("musicianhealth"), 
+		MUSICIANPROFILING("musicianprofiling"), MUSICIANSCHEDULE("musicianschedule"), 
+		MUSICIANWEALTH("musicianwealth"), REGISTRATION("registration"), VIRTUOSITY("virtuosity"),
+		MESSAGES("messages");
+	        
+		private String value;
+	        
+        private ImarsCollections(String value){
+        	this.setValue(value);
+        }
+
+		public String getValue() {
+			return value;
+		}
+		
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+		
+		public static ImarsCollections fromValue(String value) {
+			for (ImarsCollections collection : values()) {
+				if (collection.value.equalsIgnoreCase(value)) {
+					return collection;
+				}
+			}
+			throw new IllegalArgumentException(
+					"Unknown enum type " + value + ", Allowed values are " + Arrays.toString(values()));
+		}
+	}
 
     public enum Gender {
         MALE("male"), FEMALE("female");
@@ -131,12 +164,12 @@ public class ImarsEnums {
     	
     }
     
-    public enum Wealth{
+    public enum Asset{
     	HOUSE("house"),CAR("car"),PLANE("plane"),YATCH("yatch"),MONEY("money"),INSTRUMENTS("instruments");
     	
     	private String value;
         
-        private Wealth(String value){
+        private Asset(String value){
         	this.setValue(value);
         }
 
@@ -149,8 +182,8 @@ public class ImarsEnums {
 		}
 		
 		
-		public static Wealth fromValue(String value) {
-			for (Wealth category : values()) {
+		public static Asset fromValue(String value) {
+			for (Asset category : values()) {
 				if (category.value.equalsIgnoreCase(value)) {
 					return category;
 				}
