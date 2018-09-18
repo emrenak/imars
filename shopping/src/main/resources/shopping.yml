@@ -38,11 +38,15 @@ eureka:
 
 # application parameters
 asset:
-assets:
- lespaul-guitar:
-  value: 5000
- strat-guitar:
-  value: 5000
- apartment:
-  value: 100000
-
+ wealthServiceUrl : http://localhost:2228/musicianwealth
+ instruments: 
+    - lespaul-guitar.5000
+    - yamaha-bass.5000
+    - yamaha-stage-custom.5000
+ estates:
+    - apartment.100000
+    - house.150000
+ cars:
+    - sports.75000
+    - racing.100000
+    - standard.20000   

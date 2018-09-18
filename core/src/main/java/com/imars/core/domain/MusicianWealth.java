@@ -2,6 +2,7 @@ package com.imars.core.domain;
 
 public class MusicianWealth {
 
+	/*TODO detailed information has to be kept like name of the instrument and value etc*/
 	private String email;
 	private int level;
 	private int instruments;
