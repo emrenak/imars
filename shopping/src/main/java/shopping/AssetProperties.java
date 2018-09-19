@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import shopping.shop.Asset;
+import com.imars.core.domain.Asset;
 
 @Component
 @ConfigurationProperties("asset")

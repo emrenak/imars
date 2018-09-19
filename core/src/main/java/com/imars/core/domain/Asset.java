@@ -1,4 +1,4 @@
-package shopping.shop;
+package com.imars.core.domain;
 
 public class Asset {
 

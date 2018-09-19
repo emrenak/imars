@@ -6,7 +6,9 @@ import static com.mongodb.client.model.Updates.currentDate;
 import static com.mongodb.client.model.Updates.set;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import musicianwealth.exception.MusicianWealthNotFoundException;
 import musicianwealth.service.MusicianWealthService;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.imars.core.domain.Asset;
 import com.imars.core.domain.MusicianWealth;
 import com.imars.core.service.CollectionFactoryService;
 import com.mongodb.client.FindIterable;
@@ -71,21 +74,40 @@ public class MusicianWealthServiceImpl implements MusicianWealthService {
 
 	@Override
 	public void addAssets(String email, String asset, int numOfasset) {
-		logger.trace("inside addGoods :" + email);
+		logger.trace("inside addAssets :" + email);
 		MongoCollection<Document> musicianWealthCollection = collectionFactoryService.getCollection("musicianwealth");
 		FindIterable<Document> mdocs = musicianWealthCollection.find(eq("email",email));
-		for (Document doc : mdocs) {
-			Integer assetCount = doc.getInteger(asset);
-			if(assetCount == null){
-				assetCount = 0;
+		Document doc = mdocs.first();
+		Map<String, String> assetList = null;
+		if(doc != null){
+			assetList = doc.get("assetList", Map.class);
+			if(assetList == null){
+				assetList = new HashMap<String, String>();
+				doc.put("assetList", assetList);
 			}
-			assetCount += numOfasset;
-			musicianWealthCollection.updateOne(eq("email", email),
-			        combine(set(asset, assetCount),currentDate("lastModified")));
-			logger.info(email + " asset is added");
+		}else{
+			assetList = new HashMap<String, String>();
+			doc = new Document("email", email)
+	        .append("level",0).append("assetList", assetList);
+			musicianWealthCollection.insertOne(doc);
+			mdocs = musicianWealthCollection.find(eq("email",email));
+			doc = mdocs.first();
 		}
-		
+		assetList = doc.get("assetList", Map.class); // Due to codec exception, re-get the asset list
+		String assetCount = assetList.get(asset);
+		Long count = 0L;
+		if(assetCount != null){
+			count = Long.parseLong(assetCount);
+		}
+		count += numOfasset;
+		assetList.put(asset, count.toString());
+		musicianWealthCollection.updateOne(eq("email", email),
+		        combine(set("assetList", assetList),currentDate("lastModified")));
+		logger.info(email + " asset is added");
+			
 	}
+		
+	
 	
 	public List<MusicianWealth> rankByWealthLevel(){
 		logger.trace("inside rankByWealthLevel");
