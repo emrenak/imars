@@ -10,6 +10,7 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 @SpringBootApplication
 public class ZuulGatewayServer {
 
+	// For routing and load balancing purposes. 
 	public static void main(String[] args) {
 		 SpringApplication.run(ZuulGatewayServer.class, args);
 

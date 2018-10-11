@@ -46,6 +46,7 @@ public class LoginServiceImpl implements LoginService{
 		boolean isMemberFound = false;
 		for (Document mdoc : mdocs) {
 			isMemberFound = true;
+			logger.info("member is found:" + email);
 			Calendar cal = Calendar.getInstance();
 			Date activationDate = mdoc.getDate("activationDate");
 			if(cal.getTime().getTime() >= (activationDate.getTime() + passwordExpiryPeriod) ){
