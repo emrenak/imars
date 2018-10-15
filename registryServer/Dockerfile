@@ -1,4 +1,4 @@
-FROM java:8
+FROM java:8 
 MAINTAINER emrenak
 VOLUME /tmp
 ARG DEPENDENCY

@@ -4,14 +4,15 @@
   <artifactId>registryServer</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>registryServer</name>
-	<parent>
+  <parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-starter-parent</artifactId>
-		<version>Brixton.RELEASE</version>
-	</parent>
+		<version>Dalston.SR5</version>
+  </parent>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<docker.image.prefix>imars</docker.image.prefix>
 	</properties>
 	
 	<dependencies>
@@ -27,4 +28,59 @@
 			<artifactId>spring-cloud-starter-eureka-server</artifactId>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			 <plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.3.6</version>
+				<configuration>
+					<repository>imars/registryserver</repository>
+					<buildArgs>
+						<DEPENDENCY>target/dependency</DEPENDENCY>
+					</buildArgs>
+				</configuration>
+			</plugin>
+			<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-dependency-plugin</artifactId>
+		    <executions>
+		        <execution>
+		            <id>unpack</id>
+		            <phase>package</phase>
+		            <goals>
+		                <goal>unpack</goal>
+		            </goals>
+		            <configuration>
+		                <artifactItems>
+		                    <artifactItem>
+		                        <groupId>${project.groupId}</groupId>
+		                        <artifactId>${project.artifactId}</artifactId>
+		                        <version>${project.version}</version>
+		                    </artifactItem>
+		                </artifactItems>
+		            </configuration>
+		        </execution>
+		    </executions>
+		 </plugin>
+		</plugins>
+	</build>
+	
+	<repositories>
+		<repository>
+			<id>spring-releases</id>
+			<url>https://repo.spring.io/libs-release</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-releases</id>
+			<url>https://repo.spring.io/libs-release</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
