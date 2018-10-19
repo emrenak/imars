@@ -1,4 +1,6 @@
 # Configure this Discovery Server
+# docker based configuration, static IP is assigned to the service:
+# docker run -p 1111:1111 -h registryserver --net imarsnet --ip 172.18.0.2 -t imars/registryserver:latest
 eureka:
   instance:
     hostname: localhost

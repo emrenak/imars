@@ -18,10 +18,11 @@ server:
 # Discovery Server Access
 #  1. DEV ONLY: Reduce the lease renewal interval to speed up registration
 #  2. Define URL of registration server (defaultZone)
+#  3. docker run -p 2226:2226 -h virtuosityserver --net imarsnet --ip 172.18.0.14 -t imars/virtuosity:latest
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://172.17.0.2:1111/eureka/ # config for dockerized deployment on the same host that docker daemon is running. (bridged network)
+      defaultZone: http://172.18.0.2:1111/eureka/ # config for dockerized deployment on the same host that docker daemon is running. (bridged network)
       #defaultZone: http://localhost:1111/eureka/ # config for development purposes on local computer  
   instance:
     leaseRenewalIntervalInSeconds: 5   # DO NOT DO THIS IN PRODUCTION
